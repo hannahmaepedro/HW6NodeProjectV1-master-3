@@ -9,8 +9,8 @@ let RestaurantObject = function (pName, pCity, pState, pURL, pCuisine, pPrice) {
     this.URL = pURL;
     this.Cuisine = pCuisine;
     this.Price = pPrice;
-    //this.ID = Math.random().toString(16).slice(5);
-    this.ID = restaurantArray.length +1;
+    this.ID = Math.random().toString(16).slice(5);
+    // this.ID = restaurantArray.length +1;
 }
 
 restaurantArray.push(new RestaurantObject("Cuidad", "Georgetown", "WA", "http://www.ciudadseattle.com/", "Mediteranian", "$$"));
@@ -22,7 +22,7 @@ let selectedCuisine = "not selected";
 let selectedPrice = "not selected";
 
 document.addEventListener("DOMContentLoaded", function () {
-    createList();
+    //createList();
 
     //add button events 
     //Add Restaurant info
@@ -36,6 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.location.href= "index.html#ListAll";
     });
 
+    //clear button
     document.getElementById("buttonClear").addEventListener("click", function () {
         document.getElementById("name").value = "";
         document.getElementById("city").value = "";
@@ -53,24 +54,24 @@ document.addEventListener("DOMContentLoaded", function () {
 //     });
 
 ////code that does the same thing but not using jQuery
-document.getElementById("select-cuisine").addEventListener("change", function () {
-    selectedCuisine = $("#selectcuisine").val();
-});
+    document.getElementById("select-cuisine").addEventListener("change", function () {
+        selectedCuisine = $("#select-cuisine").val();
+    });
 
     document.getElementById("select-priceRange").addEventListener("change", function () {
-        selectedPrice = $("#selectpriceRange").val();
+        selectedPrice = $("#select-priceRange").val();
     });
 
 ///sort by name
     document.getElementById("buttonSortName").addEventListener("click", function () {
-        restaurantArray.sort(dynamicSort("name"));
+        restaurantArray.sort(dynamicSort("Name"));
         createList();
         document.location.href = "index.html#ListAll";
     });
 
 ////sort by price range
     document.getElementById("buttonSortPriceRange").addEventListener("click", function () {
-        restaurantArray.sort(dynamicSort("price"));
+        restaurantArray.sort(dynamicSort("Price"));
         createList();
         document.location.href = "index.html#ListAll";
     });
@@ -92,7 +93,7 @@ document.getElementById("select-cuisine").addEventListener("change", function ()
     // need one for our details page to fill in the info based on the passed in ID
     $(document).on("pagebeforeshow", "#details", function (event) {   
         let localID = localStorage.getItem('parm');  // get the unique key back from the dictionary
-        document.getElementById("someID").innerHTML = restaurantID;
+        document.getElementById("someID").innerHTML = localID;
 
     restaurantArray = JSON.parse(localStorage.getItem("restaurantArray"));  
    
@@ -118,13 +119,13 @@ function createList() {
     restaurantArray.forEach(function (oneRestaurant, i) {
         let myLi = document.createElement("li");
         myLi.classList.add("oneRestaurant");
-        myLi.innerHTML = oneRestaurant.Name + "\t" + oneRestaurant.Cuisine + "\t" + oneRestaurant.Price + "\t";
+        myLi.innerHTML = oneRestaurant.Name + "\t " + oneRestaurant.Cuisine + "\t " + oneRestaurant.Price + "\t ";
 
         // use the html5 "data-parm" to store the ID of this particular restaurant object 
         myLi.setAttribute("data-parm", oneRestaurant.ID);
         theList.appendChild(myLi);
     });
-    mustVisitList.appendChild(myUl)
+    //mustVisitList.appendChild(myUl)
 
     // now we have the HTML done to display out list, 
     // next we make them active buttons
@@ -151,18 +152,7 @@ function createList() {
 };
 
 function dynamicSort(property) {
-    let sortOrder = 1;
-
-    if (property[0] == "-") {
-        sortOrder = -1;
-        property = property.substr(1);
-    }
-
     return function (a,b) {
-        if (sortOrder ==-1) {
-            return b[property].localeCompare(a[property]);
-        } else {
-            return a[property].localeCompare(b[property]);
+        return a[property].localeCompare(b[property]);
         }
-    }
 };
