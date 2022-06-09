@@ -9,13 +9,14 @@ let RestaurantObject = function (pName, pCity, pState, pURL, pCuisine, pPrice) {
     this.URL = pURL;
     this.Cuisine = pCuisine;
     this.Price = pPrice;
+    //this.ID = pID;
     this.ID = Math.random().toString(16).slice(5);
-    // this.ID = restaurantArray.length +1;
+    //this.ID = 100 + restaurantArray.length +1;
 }
 
 restaurantArray.push(new RestaurantObject("Cuidad", "Georgetown", "WA", "http://www.ciudadseattle.com/", "Mediteranian", "$$"));
 restaurantArray.push(new RestaurantObject("Pomodoro", "Seattle", "WA", "https://pomodoro.net/", "Italian", "$$"));
-restaurantArray.push(new RestaurantObject("Asadero Sinaloa", "Kent", "WA", "https://asaderoprime.come/", "Other", "$$$"));
+restaurantArray.push(new RestaurantObject("Asadero Sinaloa", "Kent", "WA", "https://asaderoprime.com/", "Other", "$$$"));
 console.log(restaurantArray);
 
 let selectedCuisine = "not selected";
@@ -77,10 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
-//// button for the website on DETAILS PAGE
-    document.getElementById("URL").addEventListener("click", function () {
-        window.open(document.getElementById("oneURL").innerHTML);
-    });
+
     //////end of events button
 
 
@@ -90,19 +88,30 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
+
     // need one for our details page to fill in the info based on the passed in ID
     $(document).on("pagebeforeshow", "#details", function (event) {   
-        let localID = localStorage.getItem('parm');  // get the unique key back from the dictionary
-        document.getElementById("someID").innerHTML = localID;
+        let restaurantID = localStorage.getItem("parm");  // get the unique key back from the dictionary
+        let localID = GetArrayPointer (restaurantID); // map to which array it is
+        //document.getElementById("someID").innerHTML = restaurantID;
 
-    restaurantArray = JSON.parse(localStorage.getItem("restaurantArray"));  
+        restaurantArray = JSON.parse(localStorage.getItem("restaurantArray"));  
    
-    document.getElementById("oneName").innerHTML = "Restaurant Name: " + restaurantArray[localID - 1].Name;
-    document.getElementById("oneCity").innerHTML = "City: " + restaurantArray[localID - 1].City;
-    document.getElementById("oneState").innerHTML = "State: " + restaurantArray[localID - 1].State;
-    document.getElementById("oneWeb").innerHTML = "Website: " + restaurantArray[localID - 1].URL;
-    document.getElementById("oneCuisine").innerHTML = "Cuisine: " + restaurantArray[localID - 1].Cuisine;
-    document.getElementById("onePrice").innerHTML = restaurantArray[localID - 1].Price;
+        document.getElementById("oneName").innerHTML = "Restaurant Name: " + restaurantArray[localID].Name;
+        document.getElementById("oneCity").innerHTML = "City: " + restaurantArray[localID].City;
+        document.getElementById("oneState").innerHTML = "State: " + restaurantArray[localID].State;
+        document.getElementById("oneURL").innerHTML = "Website: " + restaurantArray[localID].URL;
+        document.getElementById("oneCuisine").innerHTML = "Cuisine: " + restaurantArray[localID].Cuisine;
+        document.getElementById("onePrice").innerHTML = "Price: " + restaurantArray[localID].Price;
+
+        // clear prior data
+
+    // //// button for the website on DETAILS PAGE
+    // document.getElementById("URL").addEventListener("click", function () {
+    //     window.open(document.getElementById("oneURL").innerHTML);
+    // });
+
+        document.getElementById("URLform").action = restaurantArray[localID].URL;
     });
  
 // END OF PAGE BEFORE SHOW CODE *************************************************************************
@@ -113,30 +122,49 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function createList() {
     //clear prior data entered
-    let theList = document.getElementById("myul");
-    theList.innerHTML = "";
-    
-    restaurantArray.forEach(function (oneRestaurant, i) {
+    let mustVisitList = document.getElementById("mustVisitList");
+    //theList.innerHTML = "";
+    //removing old data to not get duplicates
+    while (mustVisitList.firstChild) {
+        mustVisitList.removeChild(mustVisitList.firstChild)
+    };
+
+    let myUl = document.createElement("ul");
+    restaurantArray.forEach(function (oneRestaurant,) {
         let myLi = document.createElement("li");
         myLi.classList.add("oneRestaurant");
-        myLi.innerHTML = oneRestaurant.Name + "\t " + oneRestaurant.Cuisine + "\t " + oneRestaurant.Price + "\t ";
 
         // use the html5 "data-parm" to store the ID of this particular restaurant object 
         myLi.setAttribute("data-parm", oneRestaurant.ID);
-        theList.appendChild(myLi);
+        myLi.innerHTML = oneRestaurant.Name + " " + oneRestaurant.Cuisine + " " + oneRestaurant.Price + " ";
+        myUl.appendChild(myLi);
     });
-    //mustVisitList.appendChild(myUl)
+    mustVisitList.appendChild(myUl)
 
     // now we have the HTML done to display out list, 
     // next we make them active buttons
     // set up an event for each new li item
-    let liList = document.getElementsByClassName("oneRestaurant");
+    // let liArray = document.getElementsByClassName("oneRestaurant");
+    // Array.from(liArray).forEach(function (element){
+    //     element.addEventListener("click", function() {
+    //     let parm = this.getAttribute("data-parm");
+    //     localStorage.setItem("parm", parm);
+    // //convert array to "string"
+    //     let stringRestaurantArray = JSON.stringify(restaurantArray);
+    //     localStorage.setItem("restaurantArray", stringRestaurantArray);
 
-    ////create an array of elements from thee "List", array supports forEach, HTMLCollection doesnt
+    // //will jump to page that will use on item
+    //     document.location.href = "index.html#details";
+    //     });
+    // });
+
+    // ////create an array of elements from thee "List", array supports forEach, HTMLCollection doesnt
+    
+    let liList = document.getElementsByClassName("oneRestaurant");
     let newRestaurantArray = Array.from(liList);
 
     //add event method for each "li"
-    newRestaurantArray.forEach(function (element, i) {
+    newRestaurantArray.forEach(function (element) {
         element.addEventListener("click", function() {
             let parm = this.getAttribute("data-parm");
             localStorage.setItem("parm", parm);
@@ -150,6 +178,18 @@ function createList() {
         });
     });
 };
+
+
+// cycles thru the array to find the array element with a matching ID
+function GetArrayPointer(localID) {
+    console.log(restaurantArray);
+    console.log(localID);
+    for (let i = 0; i < restaurantArray.length; i++) {
+        if (localID === restaurantArray[i].ID) {
+            return i;
+        }
+    }
+}
 
 function dynamicSort(property) {
     return function (a,b) {

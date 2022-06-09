@@ -67,11 +67,10 @@
     <div data-role="content" data-theme='e'>
       <p>Must Visit Restaurants</p>
       <div id="mustVisitList">
-        <ul id="myul"></ul>
       </div>
 
-      <input type="button" value="Sort by name" id="buttonSortName" data-inline="true" />
-      <input type="button" value="Sort by price range" id="buttonSortPriceRange" data-inline="true" />
+      <input type="button" value="Sort by Name" id="buttonSortName" data-inline="true" />
+      <input type="button" value="Sort by Price Range" id="buttonSortPriceRange" data-inline="true" />
     </div>
 
 
@@ -122,7 +121,7 @@ It will contain list of all the restaurants -->
             <option value="asian">Asian</option>
             <option value="mediteranian">Mediteranian</option>
             <option value="indian">Indian</option>
-            <option value="european">Europian</option>
+            <option value="european">European</option>
             <option value="spanish">Spanish</option>
             <option value="other">Other</option>
             </select>
@@ -169,18 +168,18 @@ It will contain list of all the restaurants -->
 
   <!--  content -->
   <div data-role="content" data-theme='b'>
-  <!-- <div class="detail"> -->
     <h3>About the Restaurant</h3>
-      <h4>This is where the restaurant's li info !!!!</h4>
-      <p id="someID"></p>
+      <!-- <p>This is where the restaurant's li info !!!!</p> -->
+      <!-- <p id="someID"></p> -->
       <p id="oneName"></p>
       <p id="oneCity"></p>
       <p id="oneState"></p>
       <p id="oneCuisine"></p>
       <p id="onePrice"></p>
-      <p id="oneURL"></p>
-      <input type="button" value="Website" id="URL" />
-    </div>
+      <p id="oneURL" hidden></p>
+      <form id = "URLform">
+      <input type="submit" value="Website" id="URL" />
+      </form>
   </div>
 
   <!--    footer -->
